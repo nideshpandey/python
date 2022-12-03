@@ -1,8 +1,11 @@
-from lib2to3.pgen2 import driver
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service 
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
+from datetime import datetime
+import os
+
+application_path = os.getcwd()
 
 website = 'https://www.thesun.co.uk/tech/'
 driver_path = '/Users/nidesh/Desktop/datasci/chromedriver'
@@ -30,7 +33,7 @@ information = browser.find_elements(by='xpath', value='//div[@class="teaser__cop
 
 #Iterating all required elements from "information" variable
 for info in information:
-    titles.append(info.find_element(by='xpath', value='./a/h2').text)
+    titles.append(info.find_element(by='xpath', value='./a/h3').text)
     subtitles.append(info.find_element(by='xpath', value='./a/p').text)
     links.append(info.find_element(by='xpath', value='./a').get_attribute('href'))
 
@@ -45,9 +48,14 @@ info_dict = {
 df_info = pd.DataFrame(info_dict)
 
 #Converting the dataframe to CSV file
-df_info.to_csv('technology.csv')
+date_time = datetime.now()
+date = date_time.strftime('%m-%d-%Y')
+time = date_time.strftime('%X')
+filename = f'{date}-technology.csv'
+final_path = os.path.join(application_path, filename)
+df_info.to_csv(final_path)
 
-print('Successfully exported to CSV file.')
+print(f'Successfully exported to CSV file at date {date} and time {time}.')
 browser.quit()
 
 
@@ -56,3 +64,4 @@ browser.quit()
 
 
 
+ 
